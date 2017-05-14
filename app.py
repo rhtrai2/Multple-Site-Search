@@ -38,10 +38,10 @@ def index():
 
 def get_googleApis(query):
 
-    url = 'https://www.googleapis.com/customsearch/v1?key=AIzaSyCT7FUx37Ed_-KBWiLAe48X_o4qGJZuH70&cx=017576662512468239146:omuauf_lfve&q=' + query
+    url = 'https://www.googleapis.com/customsearch/v1?key='+ os.environ.get('GOOGLEKEY') +'&cx='+ os.environ.get('GOOGLECX') +'&q=' + query
 
-    r = requests.get(url).json()
-    return r, url
+    result = requests.get(url).json()
+    return result, url
 
 #----- Server On ----------
 # start the webserver
