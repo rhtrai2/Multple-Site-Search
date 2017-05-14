@@ -22,7 +22,7 @@ def index():
 	results = {
             'google': {
                 'url': googleresults[1],
-                'text': googleresults[0]['items'][0]["snippet"]
+                'text': googleresults[0]
             },
             'twitter': {
                 'url': "https://example.com?q=the%dark%knight",
@@ -40,11 +40,14 @@ def index():
 
 
 def get_googleApis(query):
+    try:
+	url = 'https://www.googleapis.com/customsearch/v1?key='+ os.environ.get('GOOGLEKEY') +'&cx='+ os.environ.get('GOOGLECX') +'&q=' + query
 
-    url = 'https://www.googleapis.com/customsearch/v1?key='+ os.environ.get('GOOGLEKEY') +'&cx='+ os.environ.get('GOOGLECX') +'&q=' + query
-
-    result = requests.get(url).json()
-    return result, url
+    	result = requests.get(url, timeout=1.001).json()
+    	return result['items'][0]["snippet"], url
+    except requests.Timeout:
+        result = "Request Timed out"
+        return  result, url
 
 #query function to query duckduckgo api
 def get_ducks(query):
@@ -55,7 +58,7 @@ def get_ducks(query):
         return  result['RelatedTopics'][0]['Text'], url
     except requests.Timeout:
         result = "Request Timed out"
-    return  result, url
+        return  result, url
 
 #----- Server On ----------
 # start the webserver
