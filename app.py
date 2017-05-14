@@ -15,6 +15,9 @@ def index():
  
 	#get search data from google api
 	googleresults = get_googleApis(query)
+	
+	#get search data from duckduckgo api
+	duckduckgoresults = get_ducks(query)
 
 	results = {
             'google': {
@@ -26,8 +29,8 @@ def index():
                 'text': "Hello World"
             },
             'duckduckgo': {
-                'url': "Hello Duck",
-                'text': "Hello Duck"
+                'url': duckduckgoresults[1],
+                'text': duckduckgoresults[0]
             }
         }
 
@@ -42,6 +45,17 @@ def get_googleApis(query):
 
     result = requests.get(url).json()
     return result, url
+
+#query function to query duckduckgo api
+def get_ducks(query):
+    
+    try:
+        url = 'http://api.duckduckgo.com/?q=' + query + '&format=json&pretty=1'
+        result = requests.get(url, timeout=0.001).json()
+        return  result['RelatedTopics'][0]['Text'], url
+    except requests.Timeout:
+        result = "Request Timed out"
+    return  result, url
 
 #----- Server On ----------
 # start the webserver
