@@ -34,8 +34,8 @@ def index():
                 'text': googleresults[0]
             },
             'twitter': {
-                'url': "https://example.com?q=the%dark%knight",
-                'text': tweetresults
+                'url': tweetresults[1],
+                'text': tweetresults[0]
             },
             'duckduckgo': {
                 'url': duckduckgoresults[1],
@@ -51,27 +51,29 @@ def index():
 def get_googleApis(query):
     try:
 	url = 'https://www.googleapis.com/customsearch/v1?key='+ os.environ.get('GOOGLEKEY') +'&cx='+ os.environ.get('GOOGLECX') +'&q=' + query
-
+	showUrl = 'https://www.google.com?q=' + query
     	result = requests.get(url, timeout=1.001).json()
-    	return result['items'][0]["snippet"], url
+    	return result['items'][0]["snippet"], showUrl
     except requests.Timeout:
         result = "Request Timed out"
-        return  result, url
+        return  result, showUrl
 
 #query function to query duckduckgo api
 def get_ducks(query):
     
     try:
         url = 'http://api.duckduckgo.com/?q=' + query + '&format=json&pretty=1'
+	showUrl='https://www.duckduckgo.com?q=' + query
         result = requests.get(url, timeout=0.001).json()
-        return  result['RelatedTopics'][0]['Text'], url
+        return  result['RelatedTopics'][0]['Text'], showUrl
     except requests.Timeout:
         result = "Request Timed out"
-        return  result, url
+        return  result,showUrl
 
 def get_tweets(query):
+	showUrl ='https://www.twitter.com?q=' + query
 	result = twitter.search.tweets(q=query, count=1)
-	return result['statuses'][0]['text']
+	return result['statuses'][0]['text'], showUrl
 
 #----- Server On ----------
 # start the webserver
