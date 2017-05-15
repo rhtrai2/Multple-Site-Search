@@ -3,7 +3,7 @@ import os
 from twitter import *
 from flask import Flask, request, render_template, redirect, abort, flash, jsonify, json
 import requests
-from requests_oauthlib import OAuth1
+
 
 app = Flask(__name__)  # create our flask app
 
