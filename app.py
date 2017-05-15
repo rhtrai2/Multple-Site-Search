@@ -1,9 +1,17 @@
 #!/usr/bin/env python
 import os
+from twitter import *
 from flask import Flask, request, render_template, redirect, abort, flash, jsonify, json
 import requests
+from requests_oauthlib import OAuth1
 
 app = Flask(__name__)  # create our flask app
+
+# configure Twitter API
+twitter = Twitter(
+            auth=OAuth(os.environ.get('OAUTH_TOKEN'), os.environ.get('OAUTH_SECRET'),
+                       os.environ.get('CONSUMER_KEY'), os.environ.get('CONSUMER_SECRET'))
+            )
 
 
 @app.route('/')
@@ -18,6 +26,7 @@ def index():
 	
 	#get search data from duckduckgo api
 	duckduckgoresults = get_ducks(query)
+	tweetresults = get_tweets(query)
 
 	results = {
             'google': {
@@ -26,7 +35,7 @@ def index():
             },
             'twitter': {
                 'url': "https://example.com?q=the%dark%knight",
-                'text': "Hello World"
+                'text': tweetresults
             },
             'duckduckgo': {
                 'url': duckduckgoresults[1],
@@ -59,6 +68,10 @@ def get_ducks(query):
     except requests.Timeout:
         result = "Request Timed out"
         return  result, url
+
+def get_tweets(query):
+	result = twitter.search.tweets(q=query, count=1)
+	return result['statuses'][0]['text']
 
 #----- Server On ----------
 # start the webserver
