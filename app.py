@@ -52,7 +52,7 @@ def get_googleApis(query):
     try:
 	url = 'https://www.googleapis.com/customsearch/v1?key='+ os.environ.get('GOOGLEKEY') +'&cx='+ os.environ.get('GOOGLECX') +'&q=' + query
 	showUrl = 'https://www.google.com?q=' + query
-    	result = requests.get(url, timeout=1.001).json()
+    	result = requests.get(url, timeout=1).json()
     	return result['items'][0]["snippet"], showUrl
     except requests.Timeout:
         result = "Request Timed out"
@@ -64,7 +64,7 @@ def get_ducks(query):
     try:
         url = 'http://api.duckduckgo.com/?q=' + query + '&format=json&pretty=1'
 	showUrl='https://www.duckduckgo.com?q=' + query
-        result = requests.get(url, timeout=0.001).json()
+        result = requests.get(url, timeout=1).json()
         return  result['RelatedTopics'][0]['Text'], showUrl
     except requests.Timeout:
         result = "Request Timed out"
